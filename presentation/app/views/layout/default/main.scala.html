@@ -1,0 +1,21 @@
+@import views.html.layout.default.partial._
+
+@(title: String)(content: Html)
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>@title</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+</head>
+<body>
+@navbar()
+
+<div class="body">
+    @content
+</div>
+
+@footer()
+</body>
+</html>
