@@ -21,8 +21,7 @@ object InMemoryUserRepo extends UserRepository {
   }
 
   override def save(ctx: SaveContext): ReaderT[Future, DatabaseEnv, SaveResult] = Kleisli { c =>
-    val savecontext = SaveContext(ctx.username, ctx.email)
-    val user = User(UserId(users.size.toLong + 1), ctx.username, ctx.email, HashedPassword("", ""))
+    val user = User(UserId(users.size.toLong + 1), ctx.username, ctx.email, ctx.pass)
 
     // TODO: wow this is ugly
     Future { users.exists(_.username == ctx.username) match {
@@ -35,7 +34,7 @@ object InMemoryUserRepo extends UserRepository {
             Success(user)
         }
 
-    }
+      }
     }
   }
 }

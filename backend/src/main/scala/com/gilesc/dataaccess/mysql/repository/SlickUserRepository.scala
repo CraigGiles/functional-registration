@@ -38,8 +38,8 @@ object SlickUserRepository extends UserRepository {
     val action = usersInsertQuery += UsersRow(0,
       context.username.value,
       context.email.value,
-      "password-hash-yep",
-      "password-salt-yep",
+      context.pass.hash,
+      context.pass.salt,
       ts, ts, None)
     val CustomerRole = Customer.id
 

@@ -1,6 +1,7 @@
 package com.gilesc.registration
 
 import com.gilesc.UnitSpec
+import com.gilesc.authentication._
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -19,8 +20,9 @@ class RegistrationSpec extends UnitSpec {
     "let me register a user" in {
       val username = Username("username" + randomString(20))
       val email = Email("email" + randomString(20) + ".com")
+      val password = RawPassword("mypassword")
 
-      val ctx = RegistrationContext(username, email)
+      val ctx = RegistrationContext(username, email, password)
       val f = Await.result(register(ctx).run(env), 1 second)
 
       verify(username, email, f) should be (true)
@@ -29,14 +31,15 @@ class RegistrationSpec extends UnitSpec {
     "not let me register two users with the same username" in {
       val username = Username("username" + randomString(20))
       val email = Email("email" + randomString(20) + ".com")
+      val password = RawPassword("mypassword")
 
-      val ctx = RegistrationContext(username, email)
+      val ctx = RegistrationContext(username, email, password)
       val f = Await.result(register(ctx).run(env), 1 second)
 
       verify(username, email, f) should be (true)
 
       val email2 = Email("email" + randomString(20) + ".com")
-      val ctx2 = RegistrationContext(username, email2)
+      val ctx2 = RegistrationContext(username, email2, password)
       val f2 = Await.result(register(ctx2).run(env), 1 second)
       f2 should be(InvalidUsernameError)
     }
@@ -44,14 +47,15 @@ class RegistrationSpec extends UnitSpec {
     "not let me register two users with the same email" in {
       val username = Username("username" + randomString(20))
       val email = Email("email" + randomString(20) + ".com")
+      val password = RawPassword("mypassword")
 
-      val ctx = RegistrationContext(username, email)
+      val ctx = RegistrationContext(username, email, password)
       val f = Await.result(register(ctx).run(env), 1 second)
 
       verify(username, email, f) should be (true)
 
       val username2 = Username("username" + randomString(20))
-      val ctx2 = RegistrationContext(username2, email)
+      val ctx2 = RegistrationContext(username2, email, password)
       val f2 = Await.result(register(ctx2).run(env), 1 second)
       f2 should be(InvalidEmailError)
     }

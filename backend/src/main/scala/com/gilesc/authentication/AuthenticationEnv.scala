@@ -15,7 +15,7 @@ object AuthenticationEnv {
    ): AuthenticationEnv = {
 
     val svc = AuthenticationServiceEnv(password)
-    val db = AuthenticationDatabaseEnv(usr, config.getConfig("regenv"))
+    val db = AuthenticationDatabaseEnv(usr, config.getConfig("regapp"))
 
     AuthenticationEnv(svc, db)
   }

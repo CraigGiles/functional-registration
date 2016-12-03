@@ -15,7 +15,7 @@ package object user {
   final case class FindById(value: UserId) extends FindBy
 
   // Classes and ADT to support save
-  final case class SaveContext(username: Username, email: Email)
+  final case class SaveContext(username: Username, email: Email, pass: HashedPassword)
 
   sealed trait SaveResult
   final case class Success(user: User) extends SaveResult
