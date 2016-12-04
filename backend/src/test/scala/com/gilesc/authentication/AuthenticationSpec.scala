@@ -6,11 +6,12 @@ import com.gilesc.authentication._
 import com.gilesc.authentication.Authentication._
 import com.gilesc.authentication.bcrypt._
 import com.gilesc.registration.InMemoryUserRepo
+import com.gilesc.registration.TestUser
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-class AuthenticationSpec extends UnitSpec {
+class AuthenticationSpec extends UnitSpec with TestUser {
   val env = AuthenticationEnv(usr = InMemoryUserRepo)
 
   "a password hashing algorithm" should {
@@ -36,13 +37,19 @@ class AuthenticationSpec extends UnitSpec {
 
   "A login system" should {
     "allow you to login given valid credentials" in {
-      val email = Email("test@email.com")
-      val pass = RawPassword("mypassword")
-      val info = AuthenticationInfo(email, pass)
+      val info = AuthenticationInfo(testEmail, rawPassword)
 
       val future = login(info).run(env)
       val f = Await.result(future, 1 second)
-      f should be(UserNotFoundError)
+      f should be(AuthSuccess(testUser))
+    }
+
+    "now allow you to login if invalid credentials are given" in {
+      val info = AuthenticationInfo(testEmail, RawPassword("invalid"))
+
+      val future = login(info).run(env)
+      val f = Await.result(future, 1 second)
+      f should be(InvalidCredentialsError)
     }
   }
 }

@@ -2,18 +2,33 @@ package com.gilesc.registration
 
 import cats.data.{Kleisli, ReaderT}
 import com.gilesc.authentication.HashedPassword
+import com.gilesc.authentication.RawPassword
 import com.gilesc.user._
 import com.gilesc.dataaccess.{DatabaseEnv, UserRepository}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+trait TestUser {
+  val plainPassword = "mypassword"
+  val rawPassword = RawPassword(plainPassword)
+  val salt = """$2a$10$fztyjhMHpnXW4wn4/bnuB."""
+  val hashedRaw = """$2a$10$fztyjhMHpnXW4wn4/bnuB.b.abfUR74lUrQa/tHcc.8AT1JGFbTWu"""
 
-object InMemoryUserRepo extends UserRepository {
+  val testId = UserId(1L)
+  val testUsername = Username("testuser")
+  val testEmail = Email("test@email.com")
+  val testPassword = HashedPassword(hashedRaw, salt)
+
+  val testUser = User(testId, testUsername, testEmail, testPassword)
+}
+
+object InMemoryUserRepo extends UserRepository with TestUser {
   var users = List.empty[User]
 
   override def find(findBy: FindBy): ReaderT[Future, DatabaseEnv, Option[User]] = Kleisli { c =>
       Future { findBy match {
+        case FindByEmail(email) if email == testEmail => Option(testUser)
         case FindByEmail(email) => users.find(_.email == email)
         case FindById(id) => users.find(_.id == id)
       }
