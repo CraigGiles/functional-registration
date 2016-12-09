@@ -3,6 +3,7 @@ package com.gilesc.authentication
 import cats.data.{Kleisli, ReaderT}
 import com.gilesc.user._
 
+import com.gilesc.dataaccess.login.LoginAttempt
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -13,15 +14,16 @@ object Authentication {
          import env.database._
          import env.services._
 
-         // TODO: when LoginAttemptsRepository gets built
-         // env.services.loginAttempts.record(email)
         users.find(FindByEmail(info.email)).local[AuthenticationEnv](_.database).run(env) map {
           case None => UserNotFoundError
           case Some(user) =>
-            if (password.verify(info.password, user.password)) {
+            val auth = if (password.verify(info.password, user.password)) {
               AuthSuccess(user)
             }
             else InvalidCredentialsError
+            loginAttempt.record(LoginAttempt(user.id, auth == AuthSuccess(user))).run(env.database)
+
+            auth
         }
       }
     }

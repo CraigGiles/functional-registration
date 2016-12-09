@@ -1,17 +1,15 @@
 package com.gilesc.authentication
 
-import com.gilesc.UnitSpec
-import com.gilesc.user._
-import com.gilesc.authentication._
-import com.gilesc.authentication.Authentication._
-import com.gilesc.authentication.bcrypt._
-import com.gilesc.registration.InMemoryUserRepo
-import com.gilesc.registration.TestUser
-
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-class AuthenticationSpec extends UnitSpec with TestUser {
+import com.gilesc.UnitSpec
+import com.gilesc.authentication.Authentication._
+import com.gilesc.authentication.bcrypt._
+import com.gilesc.registration.{TestUser, InMemoryUserRepo}
+
+class AuthenticationSpec extends UnitSpec {
+  import TestUser._
   val env = AuthenticationEnv(usr = InMemoryUserRepo)
 
   "a password hashing algorithm" should {

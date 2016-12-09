@@ -1,11 +1,11 @@
 package com.gilesc.registration
 
-import com.gilesc.UnitSpec
-import com.gilesc.authentication._
-
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Random
+
+import com.gilesc.UnitSpec
+import com.gilesc.authentication._
 
 class RegistrationSpec extends UnitSpec {
   import Registration._

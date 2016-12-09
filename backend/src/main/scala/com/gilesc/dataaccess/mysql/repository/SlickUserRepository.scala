@@ -2,6 +2,8 @@ package com.gilesc.dataaccess.mysql.repository
 
 import java.sql.Timestamp
 
+import com.gilesc.UniqueID
+import com.gilesc.UniqueIdentifier
 import com.gilesc.dataaccess.Tables._
 import com.gilesc.dataaccess.UserRepository
 import com.gilesc.dataaccess.mysql.SlickDatabaseProfile
@@ -13,7 +15,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Try
 
-object SlickUserRepository extends UserRepository {
+object SlickUserRepository extends UserRepository with UniqueIdentifier {
   import com.gilesc.user._
   import com.gilesc.dataaccess._
   import com.gilesc.dataaccess.role._
@@ -35,13 +37,13 @@ object SlickUserRepository extends UserRepository {
 
     val usersInsertQuery = Users returning Users.map(_.id) into ((user, id) => user.copy(id = id))
     val ts = Timestamp.valueOf(java.time.OffsetDateTime.now().toLocalDateTime)
-    val action = usersInsertQuery += UsersRow(0,
+    val action = usersInsertQuery += UsersRow(generateUUID().toString,
       context.username.value,
       context.email.value,
       context.pass.hash,
       context.pass.salt,
       ts, ts, None)
-    val CustomerRole = Customer.id
+    val CustomerRole = Customer.id.toString
 
     execute(action.asTry).map {
         case scala.util.Success(r) =>
@@ -67,7 +69,7 @@ object SlickUserRepository extends UserRepository {
       import database._
       import database.profile.api._
 
-      val query = Users.filter(_.id === id.value).take(1).result
+      val query = Users.filter(_.id === id.value.toString).take(1).result
 
       execute(query) map (_.headOption) map {
         case Some(row) => Some(usersRowToUser(row))
@@ -87,7 +89,7 @@ object SlickUserRepository extends UserRepository {
   }
 
   private[this] def usersRowToUser(row: UsersRow): User =
-    User(UserId(row.id),
+    User(UserId(UniqueID.fromString(row.id)),
       Username(row.username),
       Email(row.email),
       HashedPassword(row.passwordHash, row.passwordSalt))

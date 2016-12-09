@@ -1,20 +1,19 @@
 package com.gilesc.authentication
 
 import com.gilesc.dataaccess.mysql.repository.SlickUserRepository
-import com.gilesc.dataaccess.{DatabaseEnv, UserRepository}
+import com.gilesc.dataaccess.mysql.repository.SlickLoginAttemptsRepository
+import com.gilesc.dataaccess.{DatabaseEnv, UserRepository, LoginAttemptsRepository}
 import com.typesafe.config.{Config, ConfigFactory}
-
-case class LoginAttemptsRepository()
 
 object AuthenticationEnv {
   def apply(
      config: Config = ConfigFactory.load(),
      usr: UserRepository = SlickUserRepository,
-     login: LoginAttemptsRepository = LoginAttemptsRepository(),
+     loginAttempt: LoginAttemptsRepository = SlickLoginAttemptsRepository,
      password: PasswordHashing = bcrypt
    ): AuthenticationEnv = {
 
-    val svc = AuthenticationServiceEnv(password)
+    val svc = AuthenticationServiceEnv(password, loginAttempt)
     val db = AuthenticationDatabaseEnv(usr, config.getConfig("regapp"))
 
     AuthenticationEnv(svc, db)
@@ -26,7 +25,8 @@ case class AuthenticationEnv(
   database: AuthenticationDatabaseEnv)
 
 case class AuthenticationServiceEnv(
-  password: PasswordHashing)
+  password: PasswordHashing,
+  loginAttempt: LoginAttemptsRepository)
 
 case class AuthenticationDatabaseEnv(
     users: UserRepository,

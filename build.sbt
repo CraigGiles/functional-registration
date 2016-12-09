@@ -66,7 +66,7 @@ val commonSettings = Seq(
 lazy val rootProject = (project in file("."))
   .settings(commonSettings: _*)
   .settings(
-    name := "regenv",
+    name := "Registration - Authentication Test",
     aggregate in update := false)
   .aggregate(flyway, backend, presentation)
 

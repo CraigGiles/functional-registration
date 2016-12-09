@@ -9,7 +9,7 @@ object role {
   // final case class RoleContext(name: String, description: String)
 
   implicit val longToRoleId: Long => RoleId = id => RoleId(id)
-  implicit val intToRoleId: Int => RoleId = id => RoleId(id)
+  implicit val intToRoleId: Int => RoleId = id => RoleId(id.toLong)
 
   case class RoleId(value: Long) extends AnyVal
   sealed abstract class Role(val id: RoleId)

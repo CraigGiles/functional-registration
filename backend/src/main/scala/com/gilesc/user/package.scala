@@ -1,9 +1,10 @@
 package com.gilesc
 
 import com.gilesc.authentication._
+import com.gilesc.UniqueID
 
 package object user {
-  case class UserId(value: Long) extends AnyVal
+  case class UserId(value: UniqueID) extends AnyVal
   case class Username(value: String) extends AnyVal
   case class Email(value: String) extends AnyVal
 

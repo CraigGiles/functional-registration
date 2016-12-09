@@ -1,4 +1,4 @@
-lazy val databaseUrl = sys.env.getOrElse("DB_DEFAULT_URL", "jdbc:mysql://127.0.0.1:32771/test")
+lazy val databaseUrl = sys.env.getOrElse("DB_DEFAULT_URL", "jdbc:mysql://127.0.0.1:32771/test?autoReconnect=true&useSSL=false")
 lazy val databaseUser = sys.env.getOrElse("DB_DEFAULT_USER", "root")
 lazy val databasePassword = sys.env.getOrElse("DB_DEFAULT_PASSWORD", "root")
 

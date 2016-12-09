@@ -1,14 +1,14 @@
 package com.gilesc.registration
 
 import com.gilesc.dataaccess.mysql.repository.SlickUserRepository
-import com.gilesc.dataaccess.{DatabaseEnv, UserRepository}
+import com.gilesc.dataaccess.mysql.repository.SlickLoginAttemptsRepository
+import com.gilesc.dataaccess.{DatabaseEnv, UserRepository, LoginAttemptsRepository}
 import com.gilesc.authentication.bcrypt
 import com.gilesc.authentication.PasswordHashing
 import com.typesafe.config.{Config, ConfigFactory}
 
 case class EmailService()
 case class RoleRepository()
-case class LoginAttemptsRepository()
 case class AuthenticationService()
 
 object RegistrationEnv {
@@ -19,7 +19,7 @@ object RegistrationEnv {
      email: EmailService = EmailService(),
      usr: UserRepository = SlickUserRepository,
      role: RoleRepository = RoleRepository(),
-     login: LoginAttemptsRepository = LoginAttemptsRepository()
+     login: LoginAttemptsRepository = SlickLoginAttemptsRepository
    ): RegistrationEnv = {
 
     val svc = RegistrationServiceEnv(auth, passwords, email)
